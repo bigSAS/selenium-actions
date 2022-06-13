@@ -1,5 +1,5 @@
 # Selenium Actions
-
+![example workflow](https://github.com/bigSAS/selenium-actions/actions/workflows/buildmodule.yaml/badge.svg)
 PyPI - https://pypi.org/project/selenium-actions/
 
 todo: summary
