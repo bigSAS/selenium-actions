@@ -183,7 +183,7 @@ todo clean
 
 readme here 👀
 
-Flake8 `flake8 seleniumactions/ --ignore=E701,E401,E704,F403 --max-line-length=120 --exclude=__init__.py`
+Flake8 `flake8 --ignore=E701,E401,E704,F403 --max-line-length=120 --exclude=__init__.py,env/,setup.py,wip.py`
 build `pytest && python -m build`
 publis `twine upload dist/*`
 
