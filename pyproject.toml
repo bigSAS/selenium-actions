@@ -1,0 +1,26 @@
+# pyproject.toml
+
+[build-system]
+requires      = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "selenium-actions"
+version = "0.4.0"
+description = "Selenium Actions - Action Based Selenium library - selenium in more accessible way :)"
+readme = "README.md"
+authors = [{ name = "Tomasz Majk", email = "tmajk@saskodzi.pl" }]
+license = { file = "LICENSE" }
+classifiers=[
+    'License :: OSI Approved :: MIT License',
+    'Programming Language :: Python :: 3.6',
+  ]
+keywords = ['selenium', 'actions', 'selenium-actions', 'seleniumactions', 'saskodzi', 'omni-selenium']
+dependencies = [
+    "selenium >= 4.2.0"
+]
+requires-python = ">=3.6"
+
+
+[project.urls]
+Homepage = "https://github.com/bigSAS/selenium-actions"
