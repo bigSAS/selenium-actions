@@ -16,7 +16,6 @@ importlib-metadata==4.11.4
 iniconfig==1.1.1
 keyring==23.6.0
 mccabe==0.6.1
-omniselenium==1.0.0
 outcome==1.1.0
 packaging==21.3
 pep517==0.12.0
