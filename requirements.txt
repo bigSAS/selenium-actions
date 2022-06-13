@@ -38,7 +38,6 @@ requests-toolbelt==0.9.1
 rfc3986==2.0.0
 rich==12.4.4
 selenium==4.2.0
--e git+ssh://git@github.com/bigSAS/selenium-actions.git@b4b7873beb31c0aab4de7531c5fd2d230b48a76e#egg=selenium_actions
 six==1.16.0
 sniffio==1.2.0
 sortedcontainers==2.4.0
