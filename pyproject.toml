@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "selenium-actions"
-version = "1.0.0"
+version = "1.0.1"
 description = "Selenium Actions - Action Based Selenium library - selenium in more accessible way :)"
 readme = "README.md"
 authors = [{ name = "Tomasz Majk", email = "tmajk@saskodzi.pl" }]
