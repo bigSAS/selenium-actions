@@ -1,4 +1,4 @@
-name: build module
+name: publish tag
 
 on:
   push:
