@@ -157,6 +157,7 @@ class Actions:
         logger.info(f'submit {lt}')
         self.finder.find_element(lt, timeout=timeout, explicit_timeout=explicit_timeout).submit()
         if sleep_after: self.sleep()
+
     @time_it
     def wait_for(self, condition: object, timeout: str = None, explicit_timeout: int = None) -> None:
         """
