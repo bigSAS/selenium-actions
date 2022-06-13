@@ -1,4 +1,0 @@
-wd_path: D:\code\python\abs-web-testing\webdriver\chromedriver.exe
-find_element_timeout: 5
-wait_for_condition_timeout: 10
-wait_between: 0.5
