@@ -26,7 +26,7 @@ From now on you can use actions everywhere 🚀
 ### Examples
 
 ```python
-from seleniumactions import Actions, LocatorExists, XpathExists
+from seleniumactions import Actions, LocatorExists
 
 
 actions: Actions = context.actions
@@ -46,7 +46,7 @@ actions.click(news_option, timeout='medium')  # 'medium' timeout from configurat
 actions.type_text(search_input, text='python', explicit_timeout=3)  # explicit timeout in seconds (always overrides any timeout from configuration)
 actions.submit()  # submit default form (//form) - works when theres only one form on page
 # actions.submit(form)  # u can pass form locator also
-actions.wait_for(XpathExists('//search-results'), timeout='long')  # wait for condition with 'long' timeout from configuration applied
+actions.wait_for(LocatorExists(('xpath', '//search-results')), timeout='long')  # wait for condition with 'long' timeout from configuration applied
 
 # assert ect...
 ```
