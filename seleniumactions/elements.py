@@ -9,7 +9,7 @@ from selenium.webdriver.remote.webdriver import WebDriver
 
 
 class Using(object):
-    """ Enum for locator types, same as selenium By """
+    """ locator types, same as selenium By """
     ID = "id"
     NAME = "name"
     XPATH = "xpath"
@@ -35,7 +35,6 @@ class ParameterExtractor:
         return params
 
     def __find_param(self, start_index: int) -> Tuple[Optional[str], int]:
-        # todo: refactor ?
         open = self.__text.find('{', start_index)
         close = self.__text.find('}', start_index + 1)
         if open == -1 or close == -1:
@@ -76,7 +75,7 @@ class Locator:
     def __init__(self, using: Using, value: str, parameter_extractor: ParameterExtractor = None) -> None:
         self.__using = using
         self.__value = value
-        self.__parameter_extractor = parameter_extractor if parameter_extractor else ParameterExtractor(self.__value)
+        self.__parameter_extractor = parameter_extractor or ParameterExtractor(self.__value)
 
     @property
     def using(self) -> Using:
@@ -94,7 +93,6 @@ class Locator:
     def is_parameterized(self) -> bool:
         return len(self.parameters) > 0
 
-
     def get_by(self, **kwargs) -> Tuple[str, str]:
         """ get (by, value) tuple for finding selenium WebElement object """
         return (self.using, self.__get_value(**kwargs))
@@ -103,7 +101,6 @@ class Locator:
         if self.is_parameterized:
             return self.__parameterize_value(**kwargs)
         return self.value
-
 
     def __parameterize_value(self, **kwargs) -> str:
         if len(kwargs.keys()) == 0: raise ValueError(f'get_by method is missing keyword arguments: {self.parameters}')
@@ -141,11 +138,13 @@ class Finder(ABC):
         return self.__webdriver
 
     @abstractmethod
-    def find_element(self, locator_tuple: tuple, timeout: str = None, explicit_timeout: int = None, condition: object = None) -> WebElement:
+    def find_element(self, locator_tuple: tuple,
+                     timeout: str = None, explicit_timeout: int = None, condition: object = None) -> WebElement:
         pass
 
     @abstractmethod
-    def find_elements(self, locator_tuple: tuple, timeout: str = None, explicit_timeout: int = None, condition: object = None) -> List[WebElement]:
+    def find_elements(self, locator_tuple: tuple,
+                      timeout: str = None, explicit_timeout: int = None, condition: object = None) -> List[WebElement]:
         pass
 
 
@@ -156,7 +155,8 @@ class FluentFinder(Finder):
     Example usage:
     finder = FluenFinder(webdriver, default_timeout = 5)
 
-    default_timeout -> is the default WebDriverWait timeout for finding WebElement -> it can be overriden in both of finder methods
+    default_timeout -> is the default WebDriverWait timeout for finding WebElement
+                    -> it can be overriden in both of finder methods
     """
 
     def __init__(self, webdriver: WebDriver, timeouts: dict, default_timeout: int) -> None:

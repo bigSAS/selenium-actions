@@ -8,17 +8,17 @@ class LocatorTests(unittest.TestCase):
     def test_construct(self):
         locator = Locator(using=Using.ID, value='foo')
         assert locator.using == Using.ID
-        assert locator.using.value == 'id'
+        assert locator.using == 'id'
         assert locator.value == 'foo'
 
     def test_non_parameterized(self):
         locator = Locator(using=Using.XPATH, value='//foo[@bar="baz"]')
-        assert locator.is_parameterized == False
+        assert locator.is_parameterized is False
         assert locator.get_by() == ('xpath', '//foo[@bar="baz"]')
 
     def test_parameterized(self):
         locator = Locator(using=Using.XPATH, value='//foo[@bar="{baz}"]//jimmy[{choo}]')
-        assert locator.is_parameterized == True
+        assert locator.is_parameterized is True
         parameters = locator.parameters
         assert 'baz' in parameters
         assert 'choo' in parameters
@@ -28,6 +28,7 @@ class LocatorTests(unittest.TestCase):
 
     def test_parmeterization_erros(self):
         pass  # todo: impl -> check exception raising ...
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -14,13 +14,12 @@ class LocatorExists:
     def __init__(self, locator_tuple: tuple):
         self.locator_tuple = locator_tuple
 
-
     # noinspection PyBroadException
     def __call__(self, driver: WebDriver):
         try:
             driver.find_element(*self.locator_tuple)
             return True
-        except:
+        except Exception:
             return False
 
     def __str__(self):
@@ -28,19 +27,3 @@ class LocatorExists:
 
     def __repr__(self):
         return self.__str__()
-
-
-class XpathExists(LocatorExists):
-    """
-    Wait for xpath to exist
-    """
-    def __init__(self, xpath: str):
-        super().__init__(("xpath", xpath))
-
-    # noinspection PyBroadException
-    def __call__(self, driver: WebDriver):
-        try:
-            driver.find_element(*self.locator_tuple)
-            return True
-        except:
-            return False

@@ -1,11 +1,5 @@
-import logging, sys
 from abc import ABC
 from seleniumactions.actions import Actions
-
-
-logger = logging.getLogger('abs-page')
-stream_handler = logging.StreamHandler(sys.stdout)
-logger.addHandler(stream_handler)
 
 
 class Page(ABC):
@@ -15,14 +9,16 @@ class Page(ABC):
 
     Example usage:
 
-    class SasKodzi(Page):
-        url = 'https://sas-kodzi.pl'
+        from seleniumactions import Page, Using, Locator
 
-        BLOG_BUTTON = Locator(Using.XPATH, '//a[@href="/blog"]')
+        class SasKodzi(Page):
+            url = 'https://saskodzi.pl'
 
-        def goto_posts(self) -> None:
-            self.actions.click(self.BLOG_BUTTON.get_by())
-            self.actions.wait_for(XpathExists('//body'))
+            BLOG_BUTTON = Locator(Using.XPATH, '//a[@href="/blog"]').get_by()
+
+            def goto_posts(self) -> None:
+                self.actions.click(self.BLOG_BUTTON)
+
     """
 
     url = None
@@ -39,5 +35,5 @@ class Page(ABC):
         return self.actions.finder.webdriver.title
 
     def open(self, url: str = None):
-        uri = url if url else self.url
+        uri = url or self.url
         self.actions.goto(uri)

@@ -3,7 +3,7 @@ from seleniumactions.elements import ParameterExtractor
 
 
 class ParameterExtractorTest(unittest.TestCase):
-    # todo: more tests in for loop for different strings ...
+
     def test_extract_empty(self):
         text = '/foo[@bar="baz"]'
         e = ParameterExtractor(text)
@@ -33,6 +33,7 @@ class ParameterExtractorTest(unittest.TestCase):
         assert 'baz' in params
         assert 'faz' in params
         assert 'gaz' in params
+
 
 if __name__ == '__main__':
     unittest.main()

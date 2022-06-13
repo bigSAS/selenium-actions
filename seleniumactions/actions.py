@@ -38,7 +38,8 @@ class Actions:
     WebDriver and Finder are accessible with properties .webdriver and .finder
 
     Action methods are preety self explanotary :)
-    Most action methods can override timeout (find WebElement timeout) and condition (expected condition for finding WebElement).
+    Most action methods can override timeout (find WebElement timeout)
+       and condition (expected condition for finding WebElement).
     For readability purpouses they should be used as keyword arguments(timeout)
 
     Example usage:
@@ -52,13 +53,14 @@ class Actions:
 
     For more practical examples check out README.md / docs
 
-    The actions.<method>(locator_tuple: tuple) -> classic tuple for selenium webriver methods ex: ('xpath', '//div/form') or ('id', 'foobar')
+    The actions.<method>(locator_tuple: tuple) ->
+       classic tuple for selenium webriver methods ex: ('xpath', '//div/form') or ('id', 'foobar')
 
-    For helpful and super handy selector tuple implementation check out abs.elements.Locator documentation :) and examples in README.md / docs
+    For helpful and super handy selector tuple implementation check out abs.elements.Locator documentation :)
     """
 
     # ! todo: finish docstrings
-    def __init__(self, finder: Finder,  wait_for_condition_timeout: int, wait_between: int = 0) -> None:
+    def __init__(self, finder: Finder, wait_for_condition_timeout: int, wait_between: int = 0) -> None:
         self.wait_between_sec = wait_between
         self.wait_for_condition_timeout = wait_for_condition_timeout
         self.__finder = finder
@@ -86,7 +88,8 @@ class Actions:
         self.webdriver.get(url)
 
     @time_it
-    def click(self, locator_tuple: tuple, timeout: str = None, explicit_timeout: int = None, sleep_after: bool = True) -> None:
+    def click(self, locator_tuple: tuple,
+              timeout: str = None, explicit_timeout: int = None, sleep_after: bool = True) -> None:
         """
         Clik element using locator.
 
@@ -111,7 +114,7 @@ class Actions:
           email_input = ("name", "email")
           actions.type_text(email_input, "jimmy@choo.io")
           actions.type_text(email_input, text="jimmy@choo.io", timeout="absurd")  # custom timeout finding el to click
-          actions.type_text(email_input, text="jimmy@choo.io", explicit_timeout="absurd")  # custom explicit timeout (seconds) finding el to click
+          actions.type_text(email_input, text="jimmy@choo.io", explicit_timeout="absurd")  # custom explicit timeout
           actions.type_text(email_input, text="jimmy@choo.io", sleep_after=False)  # no delay after typing
         """
         tekzt = text_mask or text
@@ -120,7 +123,8 @@ class Actions:
         if sleep_after: self.sleep()
 
     @time_it
-    def clear(self, locator_tuple: tuple, timeout: str = None, explicit_timeout: int = None, sleep_after: bool = True) -> None:
+    def clear(self, locator_tuple: tuple,
+              timeout: str = None, explicit_timeout: int = None, sleep_after: bool = True) -> None:
         """
         Clear element using locator.
 
@@ -136,7 +140,8 @@ class Actions:
         if sleep_after: self.sleep()
 
     @time_it
-    def submit(self, locator_tuple: tuple = None, timeout: str = None, explicit_timeout: int = None, sleep_after: bool = True) -> None:
+    def submit(self, locator_tuple: tuple = None,
+               timeout: str = None, explicit_timeout: int = None, sleep_after: bool = True) -> None:
         """
         Submit form.
 
@@ -190,7 +195,8 @@ class Actions:
         return str(self.webdriver.execute_script(js_script))
 
     @time_it
-    def hover(self, locator_tuple: tuple, timeout: str = None, explicit_timeout: int = None, sleep_after: bool = True) -> None:
+    def hover(self, locator_tuple: tuple,
+              timeout: str = None, explicit_timeout: int = None, sleep_after: bool = True) -> None:
         logger.info(f'hover element {locator_tuple}')
         element = self.finder.find_element(locator_tuple, timeout=timeout, explicit_timeout=explicit_timeout)
         ActionChains(self.webdriver).move_to_element(element).perform()

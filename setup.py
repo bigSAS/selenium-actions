@@ -2,7 +2,7 @@ from distutils.core import setup
 setup(
   name = 'selenium-actions',
   packages = ['seleniumactions'],
-  version = '0.4.0',
+  version = '1.0.0',
   license='MIT',
   description = 'selenium actions - Action Based Selenium WebTesting library - selenium in more accessible way :)',
   author = 'Tomasz Majk',
