@@ -1,5 +1,7 @@
 # Selenium Actions
 
+PyPI - https://pypi.org/project/selenium-actions/
+
 todo: summary
 
 ## Real life examples
