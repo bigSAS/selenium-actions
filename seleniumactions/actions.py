@@ -19,7 +19,7 @@ def time_it(f):
         begin = time()
         result = f(*args, **kwargs)
         end = time()
-        logger.info(f'({f.__name__} ^) took {str(round((end - begin), 3))} seconds.')
+        logger.info(f'({f.__name__}) took {str(round((end - begin), 3))} seconds.')
         return result
     return wrapper
 
@@ -59,7 +59,6 @@ class Actions:
     For helpful and super handy selector tuple implementation check out abs.elements.Locator documentation :)
     """
 
-    # ! todo: finish docstrings
     def __init__(self, finder: Finder, wait_for_condition_timeout: int, wait_between: int = 0) -> None:
         self.wait_between_sec = wait_between
         self.wait_for_condition_timeout = wait_for_condition_timeout
@@ -105,7 +104,8 @@ class Actions:
         if sleep_after: self.sleep()
 
     @time_it
-    def type_text(self, locator_tuple: tuple, text: str, timeout: str = None, explicit_timeout: int = None,
+    def type_text(self, locator_tuple: tuple, text: str,
+                  timeout: str = None, explicit_timeout: int = None,
                   sleep_after: bool = True, text_mask: str = None) -> None:
         """
         Type text into element using locator.
@@ -159,7 +159,8 @@ class Actions:
         if sleep_after: self.sleep()
 
     @time_it
-    def wait_for(self, condition: object, timeout: str = None, explicit_timeout: int = None) -> None:
+    def wait_for(self, condition: object, timeout: str = None,
+                 explicit_timeout: int = None) -> None:
         """
         Wait for expected condition to be met.
 
@@ -180,7 +181,8 @@ class Actions:
         WebDriverWait(self.webdriver, t).until(condition)
 
     @time_it
-    def get_attribute(self, locator_tuple: tuple, attr: str, timeout: str = None, explicit_timeout: int = None) -> str:
+    def get_attribute(self, locator_tuple: tuple, attr: str,
+                      timeout: str = None, explicit_timeout: int = None) -> str:
         logger.info(f'get attribute {locator_tuple} [{attr}]')
         return self.finder.find_element(locator_tuple, timeout=timeout, explicit_timeout=explicit_timeout)\
             .get_attribute(attr)

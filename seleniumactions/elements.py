@@ -8,6 +8,11 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.remote.webdriver import WebDriver
 
 
+flogger = logging.getLogger('FINDER')
+stream_handler = logging.StreamHandler(sys.stdout)
+flogger.addHandler(stream_handler)
+
+
 class Using(object):
     """ locator types, same as selenium By """
     ID = "id"
@@ -69,10 +74,11 @@ class Locator:
     or
     >>> ValueError: get_by method is missing keyword argument: button_name
 
-    For more examples head to README.md / docs :)
+    For more examples head to README.md
 
     """
-    def __init__(self, using: Using, value: str, parameter_extractor: ParameterExtractor = None) -> None:
+    def __init__(self, using: Using, value: str,
+                 parameter_extractor: ParameterExtractor = None) -> None:
         self.__using = using
         self.__value = value
         self.__parameter_extractor = parameter_extractor or ParameterExtractor(self.__value)
@@ -116,35 +122,34 @@ class Locator:
 class Finder(ABC):
     """
     Abstraction for finding WebElements
-
-    Basic implementation in abs.elements.FluentFinder
+    Basic implementation in FluentFinder
     """
-
     def __init__(self, webdriver: WebDriver, timeouts: dict) -> None:
         self.__webdriver = webdriver
         for k in timeouts.keys():
             valid_variants = ["short", "medium", "long", "absurd"]
             if k not in valid_variants:
                 raise ValueError(f'Invalid timeout variant {k}, use {valid_variants}')
-        self.timeouts = timeouts
-        logger = logging.getLogger('FINDER')  # todo: wyjac ten logger na zew
-        stream_handler = logging.StreamHandler(sys.stdout)
-        logger.addHandler(stream_handler)
-        self.logger = logger
-        self.logger.setLevel(logging.DEBUG)
+        self.__timeouts = timeouts
 
     @property
     def webdriver(self) -> WebDriver:
         return self.__webdriver
 
+    @property
+    def timeouts(self) -> dict:
+        return self.__timeouts
+
     @abstractmethod
     def find_element(self, locator_tuple: tuple,
-                     timeout: str = None, explicit_timeout: int = None, condition: object = None) -> WebElement:
+                     timeout: str = None, explicit_timeout: int = None,
+                     condition: object = None) -> WebElement:
         pass
 
     @abstractmethod
     def find_elements(self, locator_tuple: tuple,
-                      timeout: str = None, explicit_timeout: int = None, condition: object = None) -> List[WebElement]:
+                      timeout: str = None, explicit_timeout: int = None,
+                      condition: object = None) -> List[WebElement]:
         pass
 
 
@@ -152,35 +157,40 @@ class FluentFinder(Finder):
     """
     Default Finder implementation. Should be usefull for most web testing use cases :)
 
-    Example usage:
-    finder = FluenFinder(webdriver, default_timeout = 5)
-
-    default_timeout -> is the default WebDriverWait timeout for finding WebElement
-                    -> it can be overriden in both of finder methods
+    Example:
+    timeouts = {
+        "short": 2,
+        "medium": 5,
+        "long": 10,
+        "absurd": 20
+    }
+    finder = FluentFinder(webdriver, timeouts=timeouts)
     """
 
-    def __init__(self, webdriver: WebDriver, timeouts: dict, default_timeout: int) -> None:
-        self.default_timeout = default_timeout
+    def __init__(self, webdriver: WebDriver, timeouts: dict,
+                 default_timeout: int) -> None:
         super().__init__(webdriver, timeouts)
+        self.default_timeout = default_timeout
 
-    def find_element(self, locator_tuple: tuple, timeout: str = None, explicit_timeout: int = None) -> WebElement:
-        try:
-            t = self.timeouts[timeout.lower()] if timeout is not None else self.default_timeout
-        except KeyError:
-            valid_options = list(self.timeouts.keys())
-            raise ValueError(f'Invalid timeout variant: "{timeout}", use {valid_options}')
-        if explicit_timeout: t = explicit_timeout
+    def find_element(self, locator_tuple: tuple,
+                     timeout: str = None, explicit_timeout: int = None) -> WebElement:
+        t = self.__get_timeout(timeout, explicit_timeout)
         con = EC.presence_of_element_located(locator_tuple)
-        self.logger.debug(f'find_element: {locator_tuple}, timeout: {t} sec, condition: {con}')
+        flogger.debug(f'find_element: {locator_tuple}, timeout: {t} sec, condition: {con}')
         return WebDriverWait(self.webdriver, t).until(con)
 
-    def find_elements(self, locator_tuple: tuple, timeout: str = None, explicit_timeout: int = None) -> WebElement:
+    def find_elements(self, locator_tuple: tuple,
+                      timeout: str = None, explicit_timeout: int = None) -> List[WebElement]:
+        t = self.__get_timeout(timeout, explicit_timeout)
+        con = EC.presence_of_all_elements_located(locator_tuple)
+        flogger.debug(f'find_elements: {locator_tuple}, timeout: {t} sec, condition: {con}')
+        return WebDriverWait(self.webdriver, t).until(con)
+
+    def __get_timeout(self, timeout: str = None, explicit_timeout: int = None):
         try:
             t = self.timeouts[timeout.lower()] if timeout is not None else self.default_timeout
         except KeyError:
             valid_options = list(self.timeouts.keys())
             raise ValueError(f'Invalid timeout variant: "{timeout}", use {valid_options}')
         if explicit_timeout: t = explicit_timeout
-        con = EC.presence_of_all_elements_located(locator_tuple)
-        self.logger.debug(f'find_elements: {locator_tuple}, timeout: {t} sec, condition: {con}')
-        return WebDriverWait(self.webdriver, t).until(con)
+        return t
