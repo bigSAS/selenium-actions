@@ -4,7 +4,7 @@
 
 PyPI - https://pypi.org/project/selenium-actions/
 
-todo: summary
+Simple action framework using selenium 🚀
 
 ## Real life examples
 

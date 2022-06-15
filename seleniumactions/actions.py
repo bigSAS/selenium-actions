@@ -43,20 +43,39 @@ class Actions:
     For readability purpouses they should be used as keyword arguments(timeout)
 
     Example usage:
-    finder = FluenFinder(webdriver, default_timeout=5)
-    actions = Actions(finder, wait_for_condition_timeout=10, wait_between=1)
+    from seleniumactions import Actions, FluentFinder
 
-    actions.goto(url)
-    actions.click(locator)
-    actions.click(locator, timeout=10)
+    # all timeouts are in seconds
+    timeouts = {
+        "short": 2,
+        "medium": 3,
+        "long": 5,
+        "absurd": 10
+    }
+    finder = FluentFinder(
+        driver,
+        timeouts=timeouts,
+        default_timeout=timeouts["medium"]
+    )
+    actions = Actions(
+        finder,
+        wait_for_condition_timeout=15,
+        wait_between=0.5
+    )
+
+    button = ("xpath", "//button")
+    input = ("xpath", "//input[@name='email']")
+    actions.click(button)
+    actions.type_text(input, "jimmy@choo.io")
 
 
-    For more practical examples check out README.md / docs
+    Some of action methods (most of them ;)) support overriding timeout for finding element, as kwargs:
+    - timeout (str) - short | medium | long | absurd <- from timeouts configuration
+    - explicit_timeout (int) - explicit timeout in seconds - allways overrides any timeout set
 
-    The actions.<method>(locator_tuple: tuple) ->
-       classic tuple for selenium webriver methods ex: ('xpath', '//div/form') or ('id', 'foobar')
-
-    For helpful and super handy selector tuple implementation check out abs.elements.Locator documentation :)
+    U can also skip delay after some method executions using kwarg:
+    - sleep_after (bool)
+    Ex: actions.click(loc, sleep_after=False)
     """
 
     def __init__(self, finder: Finder, wait_for_condition_timeout: int, wait_between: int = 0) -> None:
@@ -95,9 +114,9 @@ class Actions:
         Examples:
           home_button = ("id", "home-button")
           actions.click(home_button)
-          actions.click(home_button, timeout="medium")  # custom timeout finding el to click
-          actions.click(home_button, explicit_timeout=15)  # custom explici timeout (seconds) finding el to click
-          actions.click(home_button, sleep_after=False)  # no delay after clicking
+          actions.click(home_button, timeout="medium")
+          actions.click(home_button, explicit_timeout=15)
+          actions.click(home_button, sleep_after=False)
         """
         logger.info(f'click {locator_tuple}')
         self.finder.find_element(locator_tuple, timeout=timeout, explicit_timeout=explicit_timeout).click()
@@ -115,7 +134,7 @@ class Actions:
           actions.type_text(email_input, "jimmy@choo.io")
           actions.type_text(email_input, text="jimmy@choo.io", timeout="absurd")  # custom timeout finding el to click
           actions.type_text(email_input, text="jimmy@choo.io", explicit_timeout="absurd")  # custom explicit timeout
-          actions.type_text(email_input, text="jimmy@choo.io", sleep_after=False)  # no delay after typing
+          actions.type_text(email_input, text="jimmy@choo.io", sleep_after=False)
         """
         tekzt = text_mask or text
         logger.info(f'type text {locator_tuple} : {tekzt}')
@@ -131,9 +150,9 @@ class Actions:
         Examples:
           email_input = ("name", "email")
           actions.clear(email_input)
-          actions.clear(email_input, timeout="short")  # custom timeout finding el to click
-          actions.clear(email_input, explicit_timeout=15)  # custom explicit timeout (seconds) finding el to click
-          actions.clear(email_input, sleep_after=False)  # no delay after clicking
+          actions.clear(email_input, timeout="short")
+          actions.clear(email_input, explicit_timeout=15)
+          actions.clear(email_input, sleep_after=False
         """
         logger.info(f'clear field {locator_tuple}')
         self.finder.find_element(locator_tuple, timeout=timeout, explicit_timeout=explicit_timeout).clear()
@@ -149,9 +168,9 @@ class Actions:
           actions.submit()  # only one form on page
           account_form = ("id", "account-form")
           actions.submit(account_form)
-          actions.submit(account_form, timeout="medium")  # custom timeout finding el to click
-          actions.submit(account_form, explicit_timeout=20)  # custom explicit timeout (seconds) finding el to click
-          actions.submit(account_form, sleep_after=False)  # no delay after clicking
+          actions.submit(account_form, timeout="medium")
+          actions.submit(account_form, explicit_timeout=20)
+          actions.submit(account_form, sleep_after=False)
         """
         lt = locator_tuple if locator_tuple else ('xpath', '//form')
         logger.info(f'submit {lt}')
@@ -167,7 +186,7 @@ class Actions:
         Examples:
           condition = LocatorExists(("id", "home"))
           actions.wait_for(condition)
-          actions.wait_for(condition, explicit_timeout=50)  # custom explicit timeout (seconds)
+          actions.wait_for(condition, explicit_timeout=50)
         """
         t = self.wait_for_condition_timeout
         if timeout is not None:
@@ -183,28 +202,59 @@ class Actions:
     @time_it
     def get_attribute(self, locator_tuple: tuple, attr: str,
                       timeout: str = None, explicit_timeout: int = None) -> str:
+        """
+        Get element attribute value.
+
+        Examples:
+          loc = ("id", "home")
+          actions.get_attribute(loc, attr="innerHTML")
+          actions.get_attribute(loc, attr="innerHTML", timeout="medium")
+          actions.get_attribute(loc, attr="innerHTML", explicit_timeout=3)
+        """
         logger.info(f'get attribute {locator_tuple} [{attr}]')
         return self.finder.find_element(locator_tuple, timeout=timeout, explicit_timeout=explicit_timeout)\
             .get_attribute(attr)
 
     @time_it
     def get_text(self, locator_tuple: tuple, timeout: str = None, explicit_timeout: int = None) -> str:
+        """
+        Shortcut for getting element text.
+        """
         return self.get_attribute(locator_tuple, 'innerText', timeout=timeout, explicit_timeout=explicit_timeout)
 
     @time_it
     def execute_js(self, js_script: str) -> str:
+        """
+        Execute JavaScript
+        """
         logger.info(f'execute js\n{js_script}')
         return str(self.webdriver.execute_script(js_script))
 
     @time_it
     def hover(self, locator_tuple: tuple,
               timeout: str = None, explicit_timeout: int = None, sleep_after: bool = True) -> None:
+        """
+        Hover over element using ActionChains.
+
+        Examples:
+          loc = ("id", "home")
+          actions.hover(loc)
+          actions.hover(loc, timeout="medium")
+          actions.hover(loc, explicit_timeout=3)
+          actions.hover(loc, sleep_after=False)
+        """
         logger.info(f'hover element {locator_tuple}')
         element = self.finder.find_element(locator_tuple, timeout=timeout, explicit_timeout=explicit_timeout)
         ActionChains(self.webdriver).move_to_element(element).perform()
         if sleep_after: self.sleep()
 
     def sleep(self, sec: int = None):
+        """
+        Delay execution in sec
+
+        Examples:
+          actions.sleep(3.5)
+        """
         seconds = sec if sec else self.wait_between_sec
         logger.info(f'sleep {seconds} sec')
         sleep(seconds)
