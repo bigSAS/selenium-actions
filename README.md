@@ -13,30 +13,35 @@ todo: summary
 
 ## Actions
 ### Create actions object
-todo
-### Examples
-
-Example access to actions (behave):
 
 ```python
-from behave import step
-from seleniumactions import Actions
+from seleniumactions import Actions, FluentFinder
 
-
-@step('some cool gherkin step')
-def mystep(context):  # actions has been instatnciated by fixture in behave and attached to context
-    actions: Actions = context.actions
+# all timeouts are in seconds
+timeouts = {
+    "short": 2,
+    "medium": 3,
+    "long": 5,
+    "absurd": 10
+}
+finder = FluentFinder(
+    driver,
+    timeouts=timeouts,
+    default_timeout=timeouts["medium"]
+)
+actions = Actions(
+    finder,
+    wait_for_condition_timeout=15,
+    wait_between=0.5
+)
 ```
 
-From now on you can use actions everywhere 🚀
 
 ### Examples
 
 ```python
 from seleniumactions import Actions, LocatorExists
 
-
-actions: Actions = context.actions
 
 # locators (tuples)
 main_header = ('xpath', '//h1[.="Home"]')
@@ -142,7 +147,6 @@ class HeaderByExactText(Locator):
     def __init__(self) -> None:
         super().__init__(Using.XPATH, "//h*[.='{text}']")
 
-# You can easly match the composition of webapp you're testing with simple classes that inherit from Locator
 
 class Locators:
     # for importing and better intellisence in other modules
@@ -179,18 +183,3 @@ actions.click(submit_button)
 
 # SUPER DRY!
 ```
-
-
-
----
-todo clean
-
-readme here 👀
-
-Flake8 `flake8 --ignore=E701,E401,E704,F403 --max-line-length=120 --exclude=__init__.py,env/,setup.py,wip.py`
-build `pytest && python -m build`
-publis `twine upload dist/*`
-
-todo:
-
-github actions -> flake -> test -> build -> publish when tagged
