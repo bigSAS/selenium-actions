@@ -34,6 +34,20 @@ class ParameterExtractorTest(unittest.TestCase):
         assert 'faz' in params
         assert 'gaz' in params
 
+    def test_extract_param_empty_string(self):
+        text = ''
+        e = ParameterExtractor(text)
+        params = e.get_parameters()
+        assert len(params) == 0
+
+    def test_extract_nested_params(self):
+        text = '/foo[@bar="{{baz}}-{faz}{gaz}"]'
+        e = ParameterExtractor(text)
+        params = e.get_parameters()
+        assert len(params) == 3
+        assert ['baz', 'faz', 'gaz'] == params
+
+
 
 if __name__ == '__main__':
     unittest.main()

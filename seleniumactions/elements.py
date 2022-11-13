@@ -1,4 +1,5 @@
 import logging, sys
+import re
 from abc import ABC, abstractmethod
 from typing import List, Optional, Tuple
 
@@ -31,22 +32,16 @@ class ParameterExtractor:
         self.__text = text
 
     def get_parameters(self) -> List[str]:
-        # todo: refactor ?
-        params = []
-        param, last_index = self.__find_param(start_index=0)
-        while param is not None and last_index > -1:
-            params.append(param)
-            param, last_index = self.__find_param(start_index=last_index)
-        return params
+        pattern = r'{\w+}'
 
-    def __find_param(self, start_index: int) -> Tuple[Optional[str], int]:
-        open = self.__text.find('{', start_index)
-        close = self.__text.find('}', start_index + 1)
-        if open == -1 or close == -1:
-            return None, -1
-        if open > close:
-            return None, -1
-        return self.__text[open + 1:close], close
+        if params := re.findall(pattern, self.__text):
+            return self.__extract_params(params)
+
+        return []
+
+    @staticmethod
+    def __extract_params(params: List[str]) -> List[str]:
+        return [re.sub(r'[{}]', '', param) for param in params]
 
 
 class Locator:
