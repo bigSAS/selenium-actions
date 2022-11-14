@@ -1,7 +1,7 @@
 import logging, sys
 import re
 from abc import ABC, abstractmethod
-from typing import List, Optional, Tuple
+from typing import List, Tuple
 
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC

@@ -48,6 +48,5 @@ class ParameterExtractorTest(unittest.TestCase):
         assert ['baz', 'faz', 'gaz'] == params
 
 
-
 if __name__ == '__main__':
     unittest.main()
